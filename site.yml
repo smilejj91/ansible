@@ -1,0 +1,10 @@
+---
+- hosts: webservers
+  become: yes
+  connection: local
+  roles:
+    - nginx
+#    - common
+#    - serverspec
+#    - serverspec_sample
+#    - jenkins
