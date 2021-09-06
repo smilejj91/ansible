@@ -21,6 +21,7 @@ namespace :spec do
     desc "Run serverspec tests to #{original_target}"
     RSpec::Core::RakeTask.new(target.to_sym) do |t|
       ENV['TARGET_HOST'] = original_target
+      t.rspec_opts = "--format RspecJunitFormatter --out ./reports/results_#{original_target}.xml"
       t.pattern = "spec/#{original_target}/*_spec.rb"
     end
   end

@@ -1,10 +1,28 @@
 ---
 # tasks file for serverspec
 - name: install ruby
-  yum: name=ruby state=installed
+  action : "{{ ansible_pkg_mgr}} name=ruby state=latest"
+
 
 - name: install serverspec
-  gem: name={{ item }} state=present user_install=no 
+  action : "gem name={{ item }} state=present" 
   with_items:
    - rake
    - serverspec
+   - rspec_junit_formatter
+
+- name: make serverspec node directory
+  file: path={{ serverspec_base_path}} state=directory mode=0755 owner=jenkins group=jenkins
+  tags:
+    - serverspec
+
+# tasks file for serverspec_sample
+- name: distribute serverspec suite
+  copy: src={{ item }} dest={{ serverspec_base_path }} owner=jenkins group=jenkins
+  with_items:
+    - Rakefile
+    - spec
+    - reports
+
+- name: distribute spec file
+  template: src=web_spec.rb.j2 dest={{ serverspec_base_path }}/spec/localhost/web_spec.rb

@@ -16,5 +16,5 @@ end
 describe file('/usr/share/nginx/html/index.html') do
   it { should be_file }
   it { should exist }
-  its(:content) { should match /^Hello, {{ env }} ansible!!$/ }
+  its(:content) { should match /^hello, {{ env }} ansible$/ }
 end
