@@ -1,0 +1,33 @@
+---
+# tasks file for logstash
+- name: import elasticsearch gpg key
+  apt_key:
+    url : https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/elastic.gpg
+
+- name: add elastic repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+    filename: 'elastic'
+    update_cache: no
+
+- name: install logstash
+  apt:
+    update_cache : yes
+    name: logstash
+    state: latest
+
+- name: put config for nginx
+  template: src=nginx.conf.j2 dest=/etc/logstash/conf.d/nginx.conf owner=logstash group=logstash mode=0644
+
+- name: start logstash
+  service: name=logstash state=started enabled=yes
+
+- name: change permission for nginx log directory
+  file: path={{ nginx_log_dir }} state=directory recurse=yes mode=0755
+
+
+- name: create dummy log directory
+  file: path={{ nginx_log_dir }} state=directory owner=logstash group=logstash mode=0777

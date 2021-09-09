@@ -1,0 +1,29 @@
+---
+# tasks file for elasticsearch
+- name: import elasticsearch gpg key                                    
+  apt_key:
+    url : https://artifacts.elastic.co/GPG-KEY-elasticsearch            
+    state: present                                                      
+    keyring: /etc/apt/trusted.gpg.d/elastic.gpg                         
+                                                                        
+- name: add elastic repository                                         
+  apt_repository:                                                      
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present                                                     
+    filename: 'elastic'                                                
+    update_cache: no                                                   
+
+- name: install elasticsearch
+  apt:
+    update_cache: yes
+    name: elasticsearch
+    state: latest
+
+- name: put elasticsearch config
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml 
+  notify:
+    - restart elasticsearch
+
+
+- name: start elasticsearch
+  service: name=elasticsearch state=started enabled=yes

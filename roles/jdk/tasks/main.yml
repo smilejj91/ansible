@@ -1,0 +1,4 @@
+---
+# tasks file for jdk
+- name: install jdk
+  apt: name=openjdk-{{ jdk_version }}-jdk state=latest

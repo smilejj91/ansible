@@ -1,0 +1,28 @@
+---
+# tasks file for kibana
+- name: import elasticsearch gpg key
+  apt_key:
+    url : https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/elastic.gpg
+
+- name: add elastic repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+    filename: 'elastic'
+    update_cache: no
+
+- name: install kibana
+  apt:
+    update_cache: yes
+    name: kibana
+    state: latest
+
+- name: put elasticsearch config
+  template: src=kibana.yml dest=/etc/kibana/kibana.yml owner=kibana group=kibana mode=0660
+  notify:
+    - restart elasticsearch
+
+- name: start kibana
+  service: name=kibana state=started enabled=yes
