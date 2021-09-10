@@ -1,0 +1,5 @@
+--- # tasks file for kibana
+- name: deploy Docker compose stack
+  shell:
+    chdir: roles/elasticsearch_kibana/templates/
+    cmd: docker-compose up -d 

@@ -1,7 +1,0 @@
----
-# tasks file for apache-loggen
-- name: install apache-loggen
-  gem: name=apache-loggen version={{ apache_loggen_version }} state=present user_install=no
-
-- name: create dummy log directory
-  file: path=/var/log/nginx state=directory owner=logstash group=logstash mode=0777

@@ -34,6 +34,10 @@ filter {
 }
 
 output {
+#  stdout {                    
+#    codec => rubydebug        
+#  }   
+
   elasticsearch {
     hosts => ["0.0.0.0:9200"]
   }
