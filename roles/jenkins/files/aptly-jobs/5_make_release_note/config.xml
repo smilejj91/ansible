@@ -1,0 +1,65 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>release note 작성</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>TARGET_VERSION</name>
+          <description>release note의 target version (ex. 21.10.03)
+- 양식 필히 지켜야 하며, 아래와 같은 양식 불가
+  - 21_10_03, 21/10/03, 2021년 10월 3일</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DATE</name>
+          <description>배포 날짜 (ex. 2021-10-3)
+- 양식 필히 지켜야 하며, 아래와 같은 양식 불가
+  - 21_10_03, 21/10/03, 2021년 10월 3일</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>release-note.txt</name>
+          <description>작성한 release note txt 파일 
+- txt 파일을 첨부해야하면 작성 방식은 아래와 같음 (아래는 예시)
+
+- 단일 OS인 경우 grub 화면 출력되는 현상 제거
+- EFI 모드로 TOS 설치시, /boot/efi/EFI/debian으로 설치
+- ssd version update</description>
+        </hudson.model.FileParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+RELEASENOTE_DIR=&quot;/var/spool/aptly/public/release-notes&quot;
+
+cp ${RELEASENOTE_DIR}/sample ${RELEASENOTE_DIR}/${TARGET_VERSION}
+
+sed -i &quot;s/OSVERSION/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/${TARGET_VERSION}
+sed -i &quot;s/DATE/${DATE}/g&quot; ${RELEASENOTE_DIR}/${TARGET_VERSION}
+sed -i &quot;/CONTENT/r release-note.txt&quot; ${RELEASENOTE_DIR}/${TARGET_VERSION}
+sed -i &quot;s/CONTENT//g&quot; ${RELEASENOTE_DIR}/${TARGET_VERSION}
+
+OLDVERSION=`cat ${RELEASENOTE_DIR}/latest | sed &quot;s/latestVersion//g&quot; | sed &quot;s/\&quot;//g&quot; | sed &quot;s/{//g&quot; | sed &quot;s/}//g&quot; | sed &quot;s/://g&quot;`
+echo ${OLDVERSION}
+
+sed -i &quot;s/${OLDVERSION}/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/latest
+sed -i &quot;s/${OLDVERSION}/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/list</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
