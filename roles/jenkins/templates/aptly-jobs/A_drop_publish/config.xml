@@ -1,0 +1,55 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>( ※ 주의 ※ ) 배포중인 distribution 삭제</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>DISTRIBUTION_NAME</name>
+          <description>삭제하고자하는 distribution 이름 (ex. bullseye)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PREFIX_NAME</name>
+          <description>삭제하고자하는 distribution이 위치한 곳 (ex. tmax)
+-&gt; tmax : http://tos-repo.tmaxos.com/tmax
+-&gt; debian : http://tos-repo.tmaxos.com/debian</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+DISTRIBUTION=${DISTRIBUTION_NAME}
+PREFIX=${PREFIX_NAME}
+CONFIG=&quot;/etc/aptly.conf&quot;
+
+function drop_publish() {
+  aptly publish drop -config=${CONFIG} -force-drop -skip-cleanup ${DISTRIBUTION} ${PREFIX}
+}
+
+
+if [ ${DISTRIBUTION} == &quot;&quot; ] || [ ${PRFIX} == &quot;&quot; ] || [ ${CONFIG} == &quot;&quot; ]; then
+  echo -e &quot;Please put arguments. ( ./{script}.sh {PREFIX} {COMPONENT} {CONFIG})&quot;
+  exit 1
+fi
+
+drop_publish</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

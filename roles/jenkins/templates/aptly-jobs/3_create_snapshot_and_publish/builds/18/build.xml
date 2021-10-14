@@ -1,0 +1,57 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.ParametersAction>
+      <safeParameters class="sorted-set"/>
+      <parameters>
+        <hudson.model.StringParameterValue>
+          <name>DISTRIBUTION_NAME</name>
+          <description>publish 하고자하는 distribution 이름 (ex. nabi)</description>
+          <value>hellogooroom</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>PREFIX_NAME</name>
+          <description>distribution이 위치할 경로 (ex. tmax)
+-&gt; tmax로 설정할 경우 http://tos-repo.tmaxos.com/tmax에 위치
+-&gt; debian으로 설정할 경우 http://tos-repo.tmaxos.com/debian에 위치</description>
+          <value>test</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>TARGET_VERSION</name>
+          <description>패키지들이 반영될 target version (ex. 21_10_03)
+-&gt; snapshot을 찍을 때 사용</description>
+          <value>1234</value>
+        </hudson.model.StringParameterValue>
+      </parameters>
+      <parameterDefinitionNames>
+        <string>DISTRIBUTION_NAME</string>
+        <string>PREFIX_NAME</string>
+        <string>TARGET_VERSION</string>
+      </parameterDefinitionNames>
+    </hudson.model.ParametersAction>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>osqa</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>47</queueId>
+  <timestamp>1634192055179</timestamp>
+  <startTime>1634192055182</startTime>
+  <result>SUCCESS</result>
+  <duration>2336</duration>
+  <charset>US-ASCII</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/var/lib/jenkins/workspace/3_create_snapshot_and_publish</workspace>
+  <hudsonVersion>2.303.2</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="java.util.Collections$UnmodifiableSet">
+    <c class="sorted-set"/>
+  </culprits>
+</build>

@@ -6,6 +6,12 @@
     state: present
     keyring: /etc/apt/trusted.gpg.d/jenkins.gpg
 
+- name: import apt key
+  apt_key: 
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/jenkins.gpg
+
 - name: download apt repository file of jenkins
   apt_repository:
     repo: deb http://pkg.jenkins-ci.org/debian-stable binary/
@@ -24,6 +30,10 @@
     update_cache: yes
     name: jenkins
     state: latest
+
+- name: replace configurtion
+    template: src=jenkins.aptly dest=/etc/default/jenkins
+    template: src=aptly-jobs dest=/var/lib/jenkins/jobs
 
 - name: start jenkins
   service: name=jenkins state=started enabled=yes

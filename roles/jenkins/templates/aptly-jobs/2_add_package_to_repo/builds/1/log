@@ -1,0 +1,19 @@
+Started by user [8mha:////4Ff45g+iqyq0Jla53bVEbqUA1agHNM6VZp9MdYcW/fvgAAAAmh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyOEgY+/dLi1CL9/OL4zLy0okQA2U0GDsMAAAA=[0mos_infra
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/add_package_to_repo
+Copying file to /home/aptly/
+FATAL: Only a relative path is supported, the given path is absolute: /home/aptly/
+java.lang.IllegalArgumentException: Only a relative path is supported, the given path is absolute: /home/aptly/
+	at hudson.FilePath$IsDescendant.invoke(FilePath.java:3574)
+	at hudson.FilePath$IsDescendant.invoke(FilePath.java:3563)
+	at hudson.FilePath.act(FilePath.java:1171)
+	at hudson.FilePath.act(FilePath.java:1154)
+	at hudson.FilePath.isDescendant(FilePath.java:3560)
+	at hudson.model.FileParameterValue$2.setUp(FileParameterValue.java:168)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:157)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:514)
+	at hudson.model.Run.execute(Run.java:1888)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:99)
+	at hudson.model.Executor.run(Executor.java:431)
+Finished: FAILURE

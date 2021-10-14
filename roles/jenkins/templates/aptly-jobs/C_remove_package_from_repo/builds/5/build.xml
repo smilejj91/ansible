@@ -1,0 +1,67 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.ParametersAction>
+      <safeParameters class="sorted-set"/>
+      <parameters>
+        <hudson.model.StringParameterValue>
+          <name>DISTRIBUTION_NAME</name>
+          <description>패키지 삭제를 하고자하는 repository의 distribution 이름 (ex. bullseye)</description>
+          <value>hellogooroom</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>COMPONENT_NAME</name>
+          <description>패키지 삭제를 하고자하는 repository의 component 이름 (ex. main)</description>
+          <value>main</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>TARGET_VERSION</name>
+          <description>패키지들이 삭제될 target version (ex. 21_10_03)</description>
+          <value>21_10_05</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.FileParameterValue>
+          <name>remove-package-list.txt</name>
+          <description>삭제할 패키지 리스트들이 담긴 txt 파일 (ex. 21_10_03-remove-package-list.txt)
+아래는 .txt 작성방법 예시
+
+togate-browser-stable_21.8.2.0-1_amd64
+som-agent_21.08.04_all
+
+</description>
+          <originalFileName>remove.txt</originalFileName>
+          <location>remove-package-list.txt</location>
+        </hudson.model.FileParameterValue>
+      </parameters>
+      <parameterDefinitionNames>
+        <string>DISTRIBUTION_NAME</string>
+        <string>COMPONENT_NAME</string>
+        <string>TARGET_VERSION</string>
+        <string>remove-package-list.txt</string>
+      </parameterDefinitionNames>
+    </hudson.model.ParametersAction>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>os_infra</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>33</queueId>
+  <timestamp>1634189812151</timestamp>
+  <startTime>1634189812153</startTime>
+  <result>SUCCESS</result>
+  <duration>704</duration>
+  <charset>US-ASCII</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/var/lib/jenkins/workspace/remove_package_from_repo</workspace>
+  <hudsonVersion>2.303.2</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="java.util.Collections$UnmodifiableSet">
+    <c class="sorted-set"/>
+  </culprits>
+</build>

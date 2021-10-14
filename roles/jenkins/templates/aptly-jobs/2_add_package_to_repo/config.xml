@@ -1,0 +1,69 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>repository에 패키지 추가</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>DISTRIBUTION_NAME</name>
+          <description>만들고자하는 repo의 distribution 이름 (ex. bullseye)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>COMPONENT_NAME</name>
+          <description>만들고자하는 repo의 component 이름 (ex. main)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TARGET_VERSION</name>
+          <description>패키지들이 반영될 target version (ex. 21_10_03)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>packages.zip</name>
+          <description>target version에 반영될 패키지들이 저장된 zip 형식의 압축파일 첨부 (ex. 21_10_03-packages.zip)</description>
+        </hudson.model.FileParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+DISTRIBUTION=${DISTRIBUTION_NAME}
+COMPONENT=${COMPONENT_NAME}
+TARGETDIR=&quot;${WORKSPACE}/${TARGET_VERSION}&quot;
+CONFIG=&quot;/etc/aptly.conf&quot;
+
+function add_repo() {
+  aptly repo add -config=${CONFIG} ${DISTRIBUTION}_${COMPONENT} ${TARGETDIR}
+}
+
+mkdir -p ${TARGETDIR}
+
+unzip packages.zip -d ${TARGETDIR}/
+
+rm packages.zip
+
+
+if [ ${DISTRIBUTION} == &quot;&quot; ] || [ ${COMPONENT} == &quot;&quot; ] || [ ${TARGETDIR} == &quot;&quot; ] || [ ${CONFIG} == &quot;&quot; ]; then
+  echo -e &quot;Please put arguments. ( ./{script}.sh {DISTRIBUTION} {COMPONENT} {TARGETDIR} {CONFIG})&quot;
+  exit 1
+fi
+
+add_repo</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,93 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>snapshot을 찍은 후 publish&#xd;
+-&gt; publish : 사용자들이 받을 수 있도록 배포하는 단계</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>DISTRIBUTION_NAME</name>
+          <description>publish 하고자하는 distribution 이름 (ex. nabi)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PREFIX_NAME</name>
+          <description>distribution이 위치할 경로 (ex. tmax)
+-&gt; tmax로 설정할 경우 http://tos-repo.tmaxos.com/tmax에 위치
+-&gt; debian으로 설정할 경우 http://tos-repo.tmaxos.com/debian에 위치</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TARGET_VERSION</name>
+          <description>패키지들이 반영될 target version (ex. 21_10_03)
+-&gt; snapshot을 찍을 때 사용</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+SNAPSHOT_NAME=&quot;$(date --iso-8601=seconds)-${TARGET_VERSION}&quot;
+
+DISTRIBUTION=${DISTRIBUTION_NAME}
+PREFIX=${PREFIX_NAME}
+GPGID=&quot;TmaxOS_Infra&quot;
+GPGPASSWD=&quot;TmaxYangPark2019@#&quot;
+CONFIG=&quot;/etc/aptly.conf&quot;
+
+if [ ${DISTRIBUION} == &quot;&quot; ] || [ ${PREFIX} == &quot;&quot; ] || [ ${GPGID} == &quot;&quot; ] || [ ${GPGPASSWD} == &quot;&quot; ] || [ ${CONFIG} == &quot;&quot; ]; then
+  echo -e &quot;Please put arguments. ( ./snapshot_create_and_publish_switch.sh {DISTRIBUTION} {PREFIX} {GPGID} {GPGPASSWD} {CONFIG})&quot;
+  exit 1
+fi
+
+function general_publish_switch() {
+  # ${DISTRIBUTION} snapshot create
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main from repo ${DISTRIBUTION}_main
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib from repo ${DISTRIBUTION}_contrib
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free from repo ${DISTRIBUTION}_non-free
+
+  aptly publish switch -config=${CONFIG} -skip-cleanup -skip-contents -gpg-key=&quot;${GPGID}&quot; -batch -passphrase=&quot;${GPGPASSWD}&quot; -component=main,contrib,non-free ${DISTRIBUTION} ${PREFIX} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free
+}
+
+function nabi_publish_switch() {
+  # ${DISTRIBUTION} snapshot create
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main from repo ${DISTRIBUTION}_main
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib from repo ${DISTRIBUTION}_contrib
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free from repo ${DISTRIBUTION}_non-free
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_tos from repo ${DISTRIBUTION}_tos
+
+  aptly publish switch -config=${CONFIG} -skip-cleanup -skip-contents -gpg-key=&quot;${GPGID}&quot; -batch -passphrase=&quot;${GPGPASSWD}&quot; -component=main,contrib,non-free,tos ${DISTRIBUTION} ${PREFIX} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free ${SNAPSHOT_NAME}_${DISTRIBUTION}_tos
+}
+
+function gooroom_publish_switch() {
+  # ${DISTRIBUTION} snapshot create
+  aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main from repo ${DISTRIBUTION}_main
+
+  aptly publish switch -config=${CONFIG} -skip-cleanup -skip-contents -gpg-key=&quot;${GPGID}&quot; -batch -passphrase=&quot;${GPGPASSWD}&quot; -component=main ${DISTRIBUTION} ${PREFIX} ${SNAPSHOT_NAME}_${DISTRIBUTION}_main
+}
+
+if [ ${DISTRIBUTION} == &quot;nabi&quot; ]; then
+  nabi_publish_switch
+elif [[ ${DISTRIBUTION} == *&quot;gooroom&quot;* ]]; then
+  gooroom_publish_switch
+else
+  general_publish_switch
+fi</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
