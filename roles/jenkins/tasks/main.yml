@@ -1,16 +1,29 @@
 ---
 # tasks file for jenkins
-- name: install jdk
-  yum: name=java-1.8.0-openjdk-devel state=installed
+- name: import apt key
+  apt_key: 
+    url: https://pkg.jenkins.io/debian-stable/jenkins-ci.org.key
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/jenkins.gpg
 
-- name: download yum repository file of jenkins
-  get_url: url=http://pkg.jenkins-ci.org/redhat/jenkins.repo dest=/etc/yum.repos.d/jenkins.repo mode=0644
+- name: download apt repository file of jenkins
+  apt_repository:
+    repo: deb http://pkg.jenkins-ci.org/debian-stable binary/
+    state: present
+    filename: 'jenkins'
+    update_cache: no
 
-- name: import rpm key
-  rpm_key: state=present key=http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
+- name: install open-jdk
+  apt: 
+    update_cache: yes
+    name: default-jdk
+    state: latest
 
 - name: install jenkins
-  yum: name=jenkins state=installed
+  apt: 
+    update_cache: yes
+    name: jenkins
+    state: latest
 
 - name: start jenkins
   service: name=jenkins state=started enabled=yes
