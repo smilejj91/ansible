@@ -31,8 +31,11 @@
     name: jenkins
     state: latest
 
-- name: replace configurtion
+- name: replace configurtion_1
   template: src=jenkins.aptly dest=/etc/default/jenkins
+
+- name: replace configurtion_2
+  template: src=config.xml.aptly dest=/etc/default/jenkins owner=aptly group=jenkins mode=0644
 
 - name: copy job
   copy: 

@@ -1,0 +1,93 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors/>
+  <version>2.303.2</version>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+    <permission>hudson.model.Hudson.Administer:os_infra</permission>
+    <permission>hudson.model.Hudson.Read:osqa</permission>
+    <permission>hudson.model.Item.Build:osqa</permission>
+    <permission>hudson.model.Item.Cancel:osqa</permission>
+    <permission>hudson.model.Item.Read:osqa</permission>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <disableSignup>true</disableSignup>
+    <enableCaptcha>false</enableCaptcha>
+  </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULL_NAME}</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+  <jdks/>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>all</name>
+      <description>[용어 설명]&#xd;
+1. repo: local repository를 의미하며, 패키지들을 담을 공간이라고 생각하면 됨&#xd;
+  - {distribution}_{component} 이름으로 component 마다 repository를 생성하도록 되어있음&#xd;
+  - ex. nabi distribution은 main, contrib, non-free, tos 총 4개의 component를 가지고 있으므로, 총 4개의 repository가 존재함&#xd;
+&#xd;
+2. snapshot: local repository의 현재 상태에 대한 savepoint로서, 추후 긴급하게 rollback을 하는 것에 대비하여 snapshot을 찍어두고 있음&#xd;
+&#xd;
+3. publish: 최초로 배포를 하는 과정이며, publish를 해야만 사용자들에게 노출이 됨&#xd;
+  - component 단위가 아닌, distribution 단위로 배포가 됨&#xd;
+  - publish 이후에는 publish_switch를 통해서 배포&#xd;
+&#xd;
+4. publish_switch: 이미 publish가 되어있는 distribution을 대상으로, re-publish하는 과정&#xd;
+&#xd;
+[일반적인 배포 과정]&#xd;
+1. 최초 배포 (1 -&gt; 2 -&gt; 3)&#xd;
+  - 1. create repo : repository 생성&#xd;
+  - 2. add packages to repo : 생성한 repository에 package 추가&#xd;
+  - 3. create snapshot and publish :  패키지가 추가된 repository의 현재상태에 대해 snapshot을 찍은 뒤, 최초로 배포하는 과정&#xd;
+&#xd;
+2. 재배포 (2 -&gt; 4)&#xd;
+  - 2. add packages to repo : 생성한 repository에 package 추가&#xd;
+  - 4. create snapshot and publish switch : 이미 publish가 된 distribution에 대해, repository의 현재상태에 대해 snapshot을 찍은 뒤 publish 하는 과정 &#xd;
+&#xd;
+3. 재배포 (C -&gt; 4)&#xd;
+  - C. remove packages from repo : local repository에서 불필요한 패키지 제거&#xd;
+  - 4. create snapshot and publish switch : 이미 publish가 된 distribution에 대해, repository의 현재상태에 대해 snapshot을 찍은 뒤 publish 하는 과정 &#xd;
+&#xd;
+4. (※ 사용시 주의 ※)  drop repo/publish&#xd;
+  - A. drop publish : 배포중인 distribution 삭제 (ex. 불필요해지거나, 잘못 만들었을 경우)&#xd;
+  - B. drop repo : local repository 삭제 (ex. 불필요해지거나, 잘못 만들었을 경우)&#xd;
+&#xd;
+&#xd;
+[repository 현황] (21/09/23일 기준)&#xd;
+- /debian&#xd;
+  - buster : debian buster stable mirror (signed)&#xd;
+  - buster-updates : debian buster-updates mirror (signed)&#xd;
+- /debian-security&#xd;
+  - buster/updates : debian buster security mirror (signed)&#xd;
+  - buster-updates : debian buster security mirror (signed) (aptly는 &apos;/&apos;를 지원하지 않아서 &apos;-&apos;로 대체)&#xd;
+- /gooroom&#xd;
+  - gooroom-2.0 : gooroom-2.0 stable mirror (signed)&#xd;
+- /tmax&#xd;
+  - tmaxgooroom-2.0 : (signed)&#xd;
+  - tmaxgooroom-5G : (signed)&#xd;
+  - goyang-i : TmaxOS3 (include debian original packages)&#xd;
+  - nabi : tmax package for TmaxOS21&#xd;
+  - tmax : tmax 사내배포 distro</description>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+  </views>
+  <primaryView>all</primaryView>
+  <slaveAgentPort>-1</slaveAgentPort>
+  <label></label>
+  <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+    <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+  </crumbIssuer>
+  <nodeProperties/>
+  <globalNodeProperties/>
+</hudson>
