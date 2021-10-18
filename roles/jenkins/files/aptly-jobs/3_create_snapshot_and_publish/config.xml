@@ -68,7 +68,7 @@ function nabi_publish() {
   aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free from repo ${DISTRIBUTION}_non-free
   aptly snapshot create -config=${CONFIG} ${SNAPSHOT_NAME}_${DISTRIBUTION}_tos from repo ${DISTRIBUTION}_tos
 
-  aptly publish snapshot -config=${CONFIG} -gpg-key=&quot;${GPGID}&quot; -batch -passphrase=&quot;${GPGPASSWD}&quot; -component=main,contrib,non-free -architectures=&quot;amd64&quot; -distribution=&quot;${DISTRIBUTION}&quot; ${SNAPSHOT_NAME}_${DISTRIBUTION}_main ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free ${SNAPSHOT_NAME}_${DISTRIBUTION}_tos ${PREFIX}
+  aptly publish snapshot -config=${CONFIG} -gpg-key=&quot;${GPGID}&quot; -batch -passphrase=&quot;${GPGPASSWD}&quot; -component=main,contrib,non-free,tos -architectures=&quot;amd64&quot; -distribution=&quot;${DISTRIBUTION}&quot; ${SNAPSHOT_NAME}_${DISTRIBUTION}_main ${SNAPSHOT_NAME}_${DISTRIBUTION}_contrib ${SNAPSHOT_NAME}_${DISTRIBUTION}_non-free ${SNAPSHOT_NAME}_${DISTRIBUTION}_tos ${PREFIX}
 }
 
 function gooroom_publish() {
