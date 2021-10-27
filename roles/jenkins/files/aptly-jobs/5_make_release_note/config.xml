@@ -56,7 +56,9 @@ OLDVERSION=`cat ${RELEASENOTE_DIR}/latest | sed &quot;s/latestVersion//g&quot; |
 echo ${OLDVERSION}
 
 sed -i &quot;s/${OLDVERSION}/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/latest
-sed -i &quot;s/${OLDVERSION}/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/list</command>
+sed -i &quot;s/${OLDVERSION}/${TARGET_VERSION}/g&quot; ${RELEASENOTE_DIR}/list
+
+rm release-note.txt</command>
       <configuredLocalRules/>
     </hudson.tasks.Shell>
   </builders>

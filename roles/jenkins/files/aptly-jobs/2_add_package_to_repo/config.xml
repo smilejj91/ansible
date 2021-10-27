@@ -60,7 +60,9 @@ if [ ${DISTRIBUTION} == &quot;&quot; ] || [ ${COMPONENT} == &quot;&quot; ] || [ 
   exit 1
 fi
 
-add_repo</command>
+add_repo
+
+rm -rf ${TARGETDIR}/*</command>
       <configuredLocalRules/>
     </hudson.tasks.Shell>
   </builders>

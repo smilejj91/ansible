@@ -1,8 +1,0 @@
-Started by user [8mha:////4LmuJPR6mnZ3D2VFy92UnE8v+E8TNLJkOz6QayY1dPE2AAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CL9/OLCRACoW7/cvwAAAA==[0mosqa
-Running as SYSTEM
-Building in workspace /var/lib/jenkins/workspace/1_create_repo
-[1_create_repo] $ /bin/bash /tmp/jenkins3897497623861280308.sh
-
-Local repo [hellogooroom_main] successfully added.
-You can run 'aptly repo add hellogooroom_main ...' to add packages to repository.
-Finished: SUCCESS
