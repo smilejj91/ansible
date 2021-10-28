@@ -1,4 +1,10 @@
 ---
+- name: install unzip
+  apt: 
+    update_cache: yes
+    name: unzip
+    state: latest
+
 # tasks file for jenkins
 - name: import apt key
   apt_key: 
@@ -35,7 +41,7 @@
   template: src=jenkins.aptly dest=/etc/default/jenkins
 
 - name: replace configurtion_2
-  template: src=config.xml.aptly dest=/etc/default/jenkins owner=aptly group=jenkins mode=0644
+  template: src=config.xml.aptly dest=/var/lib/jenkins/config.xml owner=aptly group=jenkins mode=0644
 
 - name: copy job
   copy: 
