@@ -1,29 +1,44 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <project>
   <actions/>
-  <description>repository에 패키지 추가</description>
+  <description>repository에 패키지 추가 &#xd;
+&#xd;
+- 패키지를 추가한다고 publish가 되는 것은 아니며, local repository에 넣어놓는다고 생각하면 됨</description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
           <name>DISTRIBUTION_NAME</name>
-          <description>만들고자하는 repo의 distribution 이름 (ex. bullseye)</description>
+          <description>패키지를 반영하고자하는 repo의 distribution 이름 (ex. nabi)
+
+- virtualos, som-agent는 b2b package로 nabi distribution에 포함되면 안됨
+- 사내배포에서는 tmax distributino에 포함</description>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>COMPONENT_NAME</name>
-          <description>만들고자하는 repo의 component 이름 (ex. main)</description>
+          <description>패키지를 반영하고자하는 repo의 component 이름 (ex. main)
+
+- main : 타 배포판 main component에 속한 패키지를 리패키징한 패키지
+- contrib : 타 배포판 contrib component에 속한 패키지를 리패키징한 패키지
+- non-free : 타 배포판 non-free component에 속한 패키지를 리패키징한 패키지
+- tos : tmax에서 생성한 패키지</description>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>TARGET_VERSION</name>
-          <description>패키지들이 반영될 target version (ex. 21_10_03)</description>
+          <description>패키지들이 반영될 target version 
+
+- 패키지 추가하는 시점으로 {년도}_{월}_{주} 로 작성해주시면 됨. (ex. 21_10_03)</description>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.FileParameterDefinition>
           <name>packages.zip</name>
-          <description>target version에 반영될 패키지들이 저장된 zip 형식의 압축파일 첨부 (ex. 21_10_03-packages.zip)</description>
+          <description>target version에 반영될 패키지들이 저장된 zip 형식의 압축파일 첨부 (ex. 21_10_03-packages.zip)
+
+- 폴더 안에 있는 모든 패키지에 대해서 recursive하게 추가됨
+- zip 파일안에 release-note.txt 필히 추가할 것.</description>
         </hudson.model.FileParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -39,6 +54,8 @@
     <hudson.tasks.Shell>
       <command>#!/bin/bash
 
+SNAPSHOT_NAME=&quot;$(date --iso-8601=seconds)-${TARGET_VERSION}&quot;
+
 DISTRIBUTION=${DISTRIBUTION_NAME}
 COMPONENT=${COMPONENT_NAME}
 TARGETDIR=&quot;${WORKSPACE}/${TARGET_VERSION}&quot;
@@ -49,10 +66,11 @@ function add_repo() {
 }
 
 mkdir -p ${TARGETDIR}
+mkdir -p ${TARGETDIR}_zip
 
 unzip packages.zip -d ${TARGETDIR}/
 
-rm packages.zip
+mv packages.zip ${TARGETDIR}_zip/${SNAPSHOT_NAME}.zip
 
 
 if [ ${DISTRIBUTION} == &quot;&quot; ] || [ ${COMPONENT} == &quot;&quot; ] || [ ${TARGETDIR} == &quot;&quot; ] || [ ${CONFIG} == &quot;&quot; ]; then
