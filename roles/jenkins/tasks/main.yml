@@ -5,6 +5,12 @@
     name: unzip
     state: latest
 
+- name: install haveged
+  apt: 
+    update_cache: yes
+    name: haveged
+    state: latest
+
 # tasks file for jenkins
 - name: import apt key
   apt_key: 
