@@ -51,7 +51,6 @@
     group: jenkins
     remote_src: yes
     mode: '0755'
-    directory_mode: yes
 
 - name: change file permission
   file:
