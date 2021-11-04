@@ -37,17 +37,14 @@
     name: default-jdk
     state: latest
 
+- name: replace configurtion_1
+  template: src=jenkins.aptly dest=/etc/default/jenkins
+
 - name: install jenkins
   apt: 
     update_cache: yes
     name: jenkins
     state: latest
-
-- name: replace configurtion_1
-  template: src=jenkins.aptly dest=/etc/default/jenkins
-
-- name: replace configurtion_2
-  template: src=config.xml.aptly dest=/var/lib/jenkins/config.xml owner=aptly group=jenkins mode=0644
 
 - name: copy job
   copy: 
@@ -55,7 +52,6 @@
     dest: /var/lib/jenkins/jobs
     owner: aptly
     group: jenkins
-    remote_src: yes
     mode: '0755'
 
 - name: change file permission
