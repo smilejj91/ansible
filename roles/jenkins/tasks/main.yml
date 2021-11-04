@@ -65,6 +65,7 @@
     group: jenkins
     mode: 0755
     state: directory
+    recurse: yes
 
 - name: change file permission
   file:
@@ -73,6 +74,7 @@
     group: jenkins
     mode: 0755
     state: directory
+    recurse: yes
 
 - name: change file permission
   file:
@@ -81,6 +83,7 @@
     group: jenkins
     mode: 0755
     state: directory
+    recurse: yes
 
 - name: start jenkins
   service: name=jenkins state=started enabled=yes
