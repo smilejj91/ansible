@@ -1,0 +1,167 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>사업별 key 생성 (gpg, ima, secureboot 총 3종의 key가 생성)&#xd;
+- gpg : repository 관련&#xd;
+- ima : package signing, gooroom exe protector 관련&#xd;
+- secureboot : secureboot, gooroom boot protector 관련</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>COMPANYNAME</name>
+          <description>사업장 이름 (ex. tmax)
+
+- 사업장 이름은 unique 하며, 중복 생성 불가
+- repository의 distribution 이름과 동일하게 작성</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PASSPHRASE</name>
+          <description>gpg secret key 비밀번호, ima, secureboot key는 별도의 비밀번호 없음
+
+- 추후 gpg key password는 key와 함께 파일에 기록됨</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+echo -e &quot;#######################################################################&quot;
+
+COMPNAME=${COMPANYNAME}
+
+cd ${JENKINS_HOME}
+
+KEYBOX=&quot;keybox/${COMPNAME}-keybox&quot;
+mkdir -p ${KEYBOX}
+
+KEYINFO=&quot;${COMPNAME}-key-info.txt&quot;
+
+if [ &quot;${COMPNAME}&quot; == &quot;&quot; ] || [ &quot;${PASSPHRASE}&quot; == &quot;&quot; ]; then
+ echo -e &quot;please put arguments&quot;
+ exit 1
+fi
+
+
+if [ -f ${KEYBOX}/${KEYINFO} ]; then
+  echo &quot;already exist!&quot;
+  exit 1
+fi
+
+cd ${KEYBOX}
+
+cat &gt;${KEYINFO}&lt;&lt;EOF
+     %echo Generating a basic OpenPGP key
+     Key-Type: RSA
+     Key-Length: 2048
+     Subkey-Type: RSA
+     Subkey-Length: 2048
+     Name-Real: ${COMPNAME}
+     Name-Comment: ${COMPNAME}
+     Name-Email: ${COMPNAME}@tmax.co.kr
+     Expire-Date: 3y
+     Passphrase: ${PASSPHRASE}
+     # Do a commit here, so that we can later print &quot;done&quot; :-)
+     %commit
+     %echo done
+EOF
+
+gpg --batch --generate-key ${KEYINFO}
+
+gpg --export ${COMPNAME} &gt; ${COMPNAME}-public.key
+gpg -batch --export-secret-key ${COMPNAME} &gt; ${COMPNAME}-secret.key
+echo ${PASSPHRASE} &gt; password.txt
+
+echo tmax1234 | sudo -S apt-key --keyring ${COMPNAME}-archive.gpg add ${COMPNAME}-public.key
+
+echo -e &quot;#######################################################################&quot;
+
+cd ${JENKINS_HOME}
+
+GENKEY=${COMPNAME}_x509_evm.key
+
+if [ -f ${KEYBOX}/${GENKEY} ]; then
+  echo &quot;already exist!&quot;
+  exit 1
+fi
+
+cd ${KEYBOX}
+
+cat &gt;${GENKEY}&lt;&lt;EOF
+[ req ]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+prompt = no
+string_mask = utf8only
+x509_extensions = v3_ca
+
+[ req_distinguished_name ]
+O = ${COMPNAME}
+CN = ${COMPNAME} IMA key
+emailAddress = ${COMPNAME}@tmax.co.kr
+
+[ v3_ca ]
+basicConstraints=critical,CA:FALSE
+keyUsage=digitalSignature
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
+EOF
+
+openssl req -new -nodes -utf8 -sha1 -days 36500 -batch -x509 -config ${GENKEY} -outform DER -out ${COMPNAME}_x509_evm.der -keyout ${COMPNAME}_privkey_evm.pem 
+
+openssl rsa -pubout -in ${COMPNAME}_privkey_evm.pem -out ${COMPNAME}_pubkey_evm.pem
+
+echo -e &quot;#######################################################################&quot;
+
+cd ${JENKINS_HOME}
+
+if [ -f ${KEYBOX}/${COMPNAME}-db.key ]; then
+  echo &quot;already exist!&quot;
+  exit 1
+fi
+
+cd ${KEYBOX}
+
+openssl req -new -x509 -newkey rsa:2048 -subj &quot;/CN=TmaxOS ${COMPNAME}-PK/&quot; \
+	-keyout ${COMPNAME}-PK.key -out ${COMPNAME}-PK.crt -days 3650 -nodes -sha256
+openssl x509 -outform DER -in ${COMPNAME}-PK.crt -out ${COMPNAME}-PK.cer
+cert-to-efi-sig-list -g `uuidgen` ${COMPNAME}-PK.crt ${COMPNAME}-PK.esl
+sign-efi-sig-list -k ${COMPNAME}-PK.key -c ${COMPNAME}-PK.crt ${COMPNAME}-PK ${COMPNAME}-PK.esl ${COMPNAME}-PK.auth
+
+openssl req -new -x509 -newkey rsa:2048 -subj &quot;/CN=TmaxOS ${COMPNAME}-KEK/&quot; \
+	-keyout ${COMPNAME}-KEK.key -out ${COMPNAME}-KEK.crt -days 3650 -nodes -sha256
+
+openssl x509 -outform DER -in ${COMPNAME}-KEK.crt -out ${COMPNAME}-KEK.cer
+cert-to-efi-sig-list -g `uuidgen` ${COMPNAME}-KEK.crt ${COMPNAME}-KEK.esl
+sign-efi-sig-list -k ${COMPNAME}-PK.key -c ${COMPNAME}-PK.crt ${COMPNAME}-KEK ${COMPNAME}-KEK.esl ${COMPNAME}-KEK.auth
+
+openssl req -new -x509 -newkey rsa:2048 -subj &quot;/CN=TmaxOS ${COMPNAME}-db/&quot; \
+	-keyout ${COMPNAME}-db.key -out ${COMPNAME}-db.crt -days 3650 -nodes -sha256
+openssl x509 -outform DER -in ${COMPNAME}-db.crt -out ${COMPNAME}-db.cer
+cert-to-efi-sig-list -g `uuidgen` ${COMPNAME}-db.crt ${COMPNAME}-db.esl
+sign-efi-sig-list -k ${COMPNAME}-KEK.key -c ${COMPNAME}-KEK.crt ${COMPNAME}-db ${COMPNAME}-db.esl ${COMPNAME}-db.auth
+
+echo -e &quot;#######################################################################&quot;
+
+cd ${JENKINS_HOME}
+
+mkdir -p ${WORKSPACE}/keybox
+zip -r ${WORKSPACE}/${KEYBOX}.zip ${KEYBOX}/</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

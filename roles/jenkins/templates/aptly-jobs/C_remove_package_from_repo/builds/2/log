@@ -1,0 +1,8 @@
+Started by user [8mha:////4Ff45g+iqyq0Jla53bVEbqUA1agHNM6VZp9MdYcW/fvgAAAAmh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyOEgY+/dLi1CL9/OL4zLy0okQA2U0GDsMAAAA=[0mos_infra
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/remove_package_from_repo
+Copying file to remove-package-list.txt
+[remove_package_from_repo] $ /bin/bash /tmp/jenkins13982186195573554097.sh
+Loading packages...
+[-] cryptsetup_2:2.1.0-5+deb10u2_all removed
+Finished: SUCCESS

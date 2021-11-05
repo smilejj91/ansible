@@ -1,0 +1,13 @@
+Started by user [8mha:////4LmuJPR6mnZ3D2VFy92UnE8v+E8TNLJkOz6QayY1dPE2AAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CL9/OLCRACoW7/cvwAAAA==[0mosqa
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/3_create_snapshot_and_publish
+[3_create_snapshot_and_publish] $ /bin/bash /tmp/jenkins15213557363927394720.sh
+/tmp/jenkins15213557363927394720.sh: line 11: [: ==: unary operator expected
+
+Snapshot 2021-10-14T06:13:50+00:00-213_hellogooroom_main successfully created.
+You can run 'aptly publish snapshot 2021-10-14T06:13:50+00:00-213_hellogooroom_main' to publish snapshot as Debian repository.
+Loading packages...
+Generating metadata files and linking package files...
+ERROR: unable to publish: unable to process packages: link /var/spool/aptly/pool/d6/52/9f86ca9365546468d262b2c2ff43_gooroom-crypto-live-installer_2021.04.21+grm2u1_all.deb /var/spool/aptly/public/test/pool/main/l/live-installer/gooroom-crypto-live-installer_2021.04.21+grm2u1_all.deb: operation not permitted
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

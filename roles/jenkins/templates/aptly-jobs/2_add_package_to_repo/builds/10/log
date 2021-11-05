@@ -1,0 +1,27 @@
+Started by user [8mha:////4LmuJPR6mnZ3D2VFy92UnE8v+E8TNLJkOz6QayY1dPE2AAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CL9/OLCRACoW7/cvwAAAA==[0mosqa
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/2_add_package_to_repo
+Copying file to packages.zip
+[2_add_package_to_repo] $ /bin/bash /tmp/jenkins6132945508041040817.sh
+Archive:  packages.zip
+   creating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/cryptroot  
+ extracting: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/cryptsetup-bin_2.1.0-5+deb10u2_amd64.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/cryptsetup-initramfs_2.1.0-5+deb10u2_all.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/cryptsetup-run_2.1.0-5+deb10u2_amd64.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/cryptsetup_2.1.0-5+deb10u2_all.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/decrypt_sdc  
+ extracting: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/gooroom-crypto-live-installer_2021.04.21+grm2u1_all.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/gooroom-crypto-partition_0.1_all.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/gooroom-sdc-tool-0.1.1-Linux.deb  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/sdc-tool-hook  
+  inflating: /var/lib/jenkins/workspace/2_add_package_to_repo/21_10_06/data/sdc_mount  
+Loading packages...
+[+] cryptsetup-bin_2:2.1.0-5+deb10u2_amd64 added
+[+] cryptsetup-initramfs_2:2.1.0-5+deb10u2_all added
+[+] cryptsetup-run_2:2.1.0-5+deb10u2_amd64 added
+[+] cryptsetup_2:2.1.0-5+deb10u2_all added
+[+] live-installer_2021.04.21+grm2u1_all added
+[+] gooroom-crypto-partition_0.1_all added
+[+] gooroom-sdc-tool_0.1.1_amd64 added
+Finished: SUCCESS

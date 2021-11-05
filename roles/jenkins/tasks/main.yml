@@ -1,14 +1,14 @@
 ---
-- name: install unzip
+- name: install packages
   apt: 
     update_cache: yes
-    name: unzip
-    state: latest
-
-- name: install haveged
-  apt: 
-    update_cache: yes
-    name: haveged
+    name: 
+      - unzip
+      - gpg
+      - haveged
+      - openssl
+      - efitools
+      - uuid-runtime
     state: latest
 
 # tasks file for jenkins
@@ -40,11 +40,14 @@
 - name: replace configurtion_1
   template: src=jenkins.aptly dest=/etc/default/jenkins
 
-- name: install jenkins
-  apt: 
-    update_cache: yes
-    name: jenkins
-    state: latest
+- name: create symbolic link
+  file:
+    src: /root/keybox
+    dest: /var/lib/jekins/keybox
+    owner: aptly
+    group: jenkins
+    mode: 0777
+    state: link
 
 - name: copy job
   copy: 
@@ -54,12 +57,18 @@
     group: jenkins
     mode: '0755'
 
+- name: install jenkins
+  apt: 
+    update_cache: yes
+    name: jenkins
+    state: latest
+
 - name: change file permission
   file:
     path: /var/lib/jenkins
     owner: aptly
     group: jenkins
-    mode: 0755
+    mode: 0777
     state: directory
     recurse: yes
 
@@ -68,7 +77,7 @@
     path: /var/log/jenkins
     owner: aptly
     group: jenkins
-    mode: 0755
+    mode: 0777
     state: directory
     recurse: yes
 
@@ -77,7 +86,7 @@
     path: /var/cache/jenkins
     owner: aptly
     group: jenkins
-    mode: 0755
+    mode: 0777
     state: directory
     recurse: yes
 

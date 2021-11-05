@@ -1,0 +1,5 @@
+cryptsetup-initramfs_2:2.1.0-5+deb10u2_all
+cryptsetup-run_2:2.1.0-5+deb10u2_amd64
+gooroom-crypto-partition_0.1_all
+gooroom-sdc-tool_0.1.1_amd64
+live-installer_2021.04.21+grm2u1_all

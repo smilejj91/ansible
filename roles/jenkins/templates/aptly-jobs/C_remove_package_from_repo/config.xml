@@ -1,0 +1,75 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>repository에서 특정 패키지 삭제</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>DISTRIBUTION_NAME</name>
+          <description>패키지 삭제를 하고자하는 repository의 distribution 이름 (ex. bullseye)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>COMPONENT_NAME</name>
+          <description>패키지 삭제를 하고자하는 repository의 component 이름 (ex. main)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TARGET_VERSION</name>
+          <description>패키지들이 삭제될 target version (ex. 21_10_03)</description>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.FileParameterDefinition>
+          <name>remove-package-list.txt</name>
+          <description>삭제할 패키지 리스트들이 담긴 txt 파일 (ex. 21_10_03-remove-package-list.txt)
+- .txt 작성방법 : {패키지이름}_{버전}_{아키텍처} (아래는 예시)
+
+togate-browser-stable_21.8.2.0-1_amd64
+som-agent_21.08.04_all
+cryptsetup-initramfs_2:2.1.0-5+deb10u2_all
+
+</description>
+        </hudson.model.FileParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+DISTRIBUTION=${DISTRIBUTION_NAME}
+COMPONENT=${COMPONENT_NAME}
+TARGETDIR=&quot;${WORKSPACE}/${TARGET_VERSION}&quot;
+CONFIG=&quot;/etc/aptly.conf&quot;
+
+function remove_package() {
+  while read line || [ -n &quot;$line&quot; ]; do
+  	aptly repo remove ${DISTRIBUTION}_${COMPONENT} $line
+    echo $line
+  done &lt; ${TARGETDIR}/remove-package-list.txt
+}
+
+mkdir -p ${TARGETDIR}
+mv remove-package-list.txt ${TARGETDIR}/
+
+if [ ${DISTRIBUTION} == &quot;&quot; ] || [ ${COMPONENT} == &quot;&quot; ] || [ ${TARGETDIR} == &quot;&quot; ] || [ ${CONFIG} == &quot;&quot; ]; then
+  echo -e &quot;Please put arguments. ( ./{script}.sh {DISTRIBUTION} {COMPONENT} {TARGETDIR} {CONFIG})&quot;
+  exit 1
+fi
+
+remove_package</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
