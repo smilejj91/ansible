@@ -1,0 +1,9 @@
+---
+- hosts: webservers
+  become: yes
+  become_user: root
+  remote_user: root
+  gather_facts: yes
+  connection: local
+  roles:
+    - virtualmin
