@@ -1,0 +1,23 @@
+---
+# tasks file for webmin
+- name: import apt key
+  apt_key: 
+    url: http://www.webmin.com/jcameron-key.asc
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/webmin.gpg
+
+- name: download apt repository file of webmin
+  apt_repository:
+    repo: deb http://download.webmin.com/download/repository sarge contrib
+    state: present
+    filename: 'webmin'
+    update_cache: no
+
+- name: install webmin
+  apt: 
+    update_cache: yes
+    name: webmin
+    state: latest
+
+- name: start webmin
+  service: name=webmin state=started enabled=yes
