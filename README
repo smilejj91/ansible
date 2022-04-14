@@ -1,0 +1,15 @@
+[사용법]
+
+$ ansible-playbook -i {inventory file} {yaml file}
+ex.) $ ansible-playbook -i development jenkins.yaml
+
+[pre-condition]
+
+$ apt install ansible
+
+[role download (ansible-galaxy)]
+
+- 직접 role을 작성해도 좋지만, 누가 잘 만들어놓은거 쓰는 것이 좋으니 github나 dockerhub처럼 open source로 관리되는 role을 사용
+- $ ansible-galaxy install {name}
+- 아래 사이트에서 찾고 싶은 role 찾아서 install 후에 role 하위 폴더로 옮긴 후에 구축하면 된다.
+- https://galaxy.ansible.com/home
